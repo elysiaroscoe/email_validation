@@ -31,10 +31,18 @@ class Email:
 
 
     @staticmethod
-    def validate_user( user ):
+    def validate_user( email ):
         is_valid = True
+        query = "SELECT * FROM emails WHERE address = %(address)s;"
+        #in any other version address would be email.... i should have made it make more sense so copy paste is easy oh well
+        results = connectToMySQL('email_schema').query_db(query,email)
+        print(results)
+        if len(results) >=1:
+            flash("Email already taken.")
+            is_valid = False
+        
         # test whether a field matches the pattern
-        if not EMAIL_REGEX.match(user['address']): #okay they had 'email' in the original which makes most sense
+        if not EMAIL_REGEX.match(email['address']): #okay they had 'email' in the original which makes most sense
             flash("Invalid email address!")
             is_valid = False
         return is_valid
